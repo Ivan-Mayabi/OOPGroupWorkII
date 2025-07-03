@@ -6,6 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 
 public class NoteController {
 
@@ -22,6 +27,23 @@ public class NoteController {
     //called automatically when the FXML is loaded
     @FXML
     public void initialize() {
+        //url to localhost for mongodb
+        String URI = "mongodb://localhost:27017";
+
+        //Create a mongo client (try with resources -> no catch block)
+        try(MongoClient mongoClient= MongoClients.create(URI)) {
+            //These lines get the database db_mongodb_notes
+            //From the specified database we get the collection(Table) notes
+            //We create a document to add to notes
+            MongoDatabase mongoDatabase = mongoClient.getDatabase("db_mongodb_notes");
+            MongoCollection mongoCollection = mongoDatabase.getCollection("notes");
+            Document document = new Document();
+            System.out.println("Connection was possible");
+
+            //Add code for reading from the database @syd-xo
+
+        }
+
         //set what each table column displays - bind the property from the Note object
         titleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
         contentColumn.setCellValueFactory(data -> data.getValue().contentProperty());
@@ -41,6 +63,25 @@ public class NoteController {
     //this methods runs when  the 'Add' button is clicked
     @FXML
     private void addNote() {
+        //url to localhost for mongodb
+        String URI = "mongodb://localhost:27017";
+
+        //Create a mongo client (try with resources -> no catch block)
+        try(MongoClient mongoClient= MongoClients.create(URI)){
+            //These lines get the database db_mongodb_notes
+            //From the specified database we get the collection(Table) notes
+            //We create a document to add to notes
+            MongoDatabase mongoDatabase= mongoClient.getDatabase("db_mongodb_notes");
+            MongoCollection mongoCollection = mongoDatabase.getCollection("notes");
+            Document document= new Document();
+            System.out.println("Connection was possible");
+
+            //We will be adding details to the document and sending that to the collection
+            document.append("Title",titleField.getText()).append("Content",contentField.getText());
+            mongoCollection.insertOne(document);
+            System.out.println("Send was possible");
+        }
+
         //Create a new Note using input fields
         Note newNote = new Note(titleField.getText(), contentField.getText());
 
@@ -54,6 +95,22 @@ public class NoteController {
     //this method runs 'update' when clicked
     @FXML
     private void updateNote() {
+        //url to localhost for mongodb
+        String URI = "mongodb://localhost:27017";
+
+        //Create a mongo client (try with resources -> no catch block)
+        try(MongoClient mongoClient= MongoClients.create(URI)) {
+            //These lines get the database db_mongodb_notes
+            //From the specified database we get the collection(Table) notes
+            //We create a document to add to notes
+            MongoDatabase mongoDatabase = mongoClient.getDatabase("db_mongodb_notes");
+            MongoCollection mongoCollection = mongoDatabase.getCollection("notes");
+            Document document = new Document();
+            System.out.println("Connection was possible");
+
+            //Add code for updating notes @Kristiebytes
+        }
+
         //get selected note
         Note selected = noteTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
@@ -69,6 +126,22 @@ public class NoteController {
     //this runs when 'delete' is clicked
     @FXML
     private void deleteNote() {
+        //url to localhost for mongodb
+        String URI = "mongodb://localhost:27017";
+
+        //Create a mongo client (try with resources -> no catch block)
+        try(MongoClient mongoClient= MongoClients.create(URI)) {
+            //These lines get the database db_mongodb_notes
+            //From the specified database we get the collection(Table) notes
+            //We create a document to add to notes
+            MongoDatabase mongoDatabase = mongoClient.getDatabase("db_mongodb_notes");
+            MongoCollection mongoCollection = mongoDatabase.getCollection("notes");
+            Document document = new Document();
+            System.out.println("Connection was possible");
+
+            //Add code for deleting notes @ALBERTM06
+        }
+
         Note selected = noteTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             notes.remove(selected); // remove from the list
