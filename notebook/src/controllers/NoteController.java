@@ -108,8 +108,27 @@ public class NoteController {
             Document document = new Document();
             System.out.println("Connection was possible");
 
-            //Add code for updating notes @Kristiebytes
+            Note selectedNote = noteTable.getSelectionModel().getSelectedItem();
+            if (selectedNote != null) {
+                String originalTitle = selectedNote.getTitle();
+                String newTitle = titleField.getText();
+                String newContent = contentField.getText();
+
+                Document filter = new Document("Title", originalTitle);
+                Document update = new Document("$set", new Document("Title", newTitle).append("Content", newContent));
+
+                mongoCollection.updateOne(filter, update);
+                System.out.println("Note updated successfully in MongoDb");
+
+                selectedNote.setTitle(newTitle);
+                selectedNote.setContent(newContent);
+                noteTable.refresh();
+            }
+        } catch (Exception e) {
+            System.out.println("Error updating note: " + e.getMessage());
+
         }
+            //Add code for updating notes @Kristiebytes
 
         //get selected note
         Note selected = noteTable.getSelectionModel().getSelectedItem();
