@@ -145,28 +145,32 @@ public class NoteController {
     //this runs when 'delete' is clicked
     @FXML
     private void deleteNote() {
-        //url to localhost for mongodb
+        // URL to MongoDB localhost
         String URI = "mongodb://localhost:27017";
 
-        //Create a mongo client (try with resources -> no catch block)
-        try(MongoClient mongoClient= MongoClients.create(URI)) {
-            //These lines get the database db_mongodb_notes
-            //From the specified database we get the collection(Table) notes
-            //We create a document to add to notes
+        try (MongoClient mongoClient = MongoClients.create(URI)) {
+            // Connect to the database and collection
             MongoDatabase mongoDatabase = mongoClient.getDatabase("db_mongodb_notes");
-            MongoCollection mongoCollection = mongoDatabase.getCollection("notes");
-            Document document = new Document();
+            MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("notes");
             System.out.println("Connection was possible");
 
-            //Add code for deleting notes @ALBERTM06
-        }
+            // Get the selected note
+            Note selected = noteTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                // Delete the note from MongoDB
+                Document filter = new Document("Title", selected.getTitle());
+                mongoCollection.deleteOne(filter);
+                System.out.println("Note deleted from MongoDB");
 
-        Note selected = noteTable.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            notes.remove(selected); // remove from the list
-            clearFields();// clear the form
+                // Remove the note from the JavaFX table
+                notes.remove(selected);
+                clearFields();
+            }
+        } catch (Exception e) {
+            System.out.println("Error deleting note: " + e.getMessage());
         }
     }
+
 
     //helper method to clear the input fields
     private void clearFields() {
