@@ -1,15 +1,12 @@
 package controllers;
 
 // import necessary JavaFX UI classes
+import com.mongodb.client.*;
 import models.Note;//must import class if its in a different package
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class NoteController {
@@ -41,7 +38,12 @@ public class NoteController {
             System.out.println("Connection was possible");
 
             //Add code for reading from the database @syd-xo
+            FindIterable<Document> all_documents = mongoCollection.find();
 
+            for(Document doc: all_documents){
+                notes.add(new Note(doc.get("Title","No title found").toString(),doc.get("Content","No content found").toString()));
+            }
+            noteTable.refresh();
         }
 
         //set what each table column displays - bind the property from the Note object
